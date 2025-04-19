@@ -10,10 +10,12 @@ func print(msg string) {
 	defer serial_mu.Unlock()
 	fmt.Print("\033[F")
 	fmt.Print(strings.Trim(msg, "\n\r"))
-	//if !is_last {
 	fmt.Print("\033[B")
-	fmt.Printf("\033[%dD", len(msg)-len(msg_prefix)-1)
-	//	}
+	if !is_last {
+		fmt.Printf("\033[%dD", len(msg)-len(msg_prefix)-1)
+	} else {
+		fmt.Printf("\033[%dD", 999)
+	}
 
 }
 

@@ -13,7 +13,7 @@ import (
 var serial_mu sync.Mutex
 var wg sync.WaitGroup
 
-//var is_last bool = false
+var is_last bool = false
 
 const (
 	msg_prefix = "> "
@@ -94,7 +94,7 @@ func filterInput(msg string) string {
 	case "/msg":
 		return "/msg " + strings.Join(args[1:], " ")
 	case "/quit":
-		//is_last = true
+		is_last = true
 		return "/quit"
 	default:
 		return "/msg " + msg
