@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 	"sync"
 )
 
 var serial_mu sync.Mutex
 
 const (
-	msg_prefix = "> "
+	msg_prefix = "-> "
 )
 
 func main() {
@@ -54,10 +55,33 @@ func getInput() string {
 	if scanner.Scan() {
 		text := scanner.Text()
 		rmLine()
-		return text
+		return filterInput(text)
 	} else {
 		return ""
 	}
+}
+
+func filterInput(msg string) string {
+	args := strings.Split(msg, " ")
+
+	cmd := args[0]
+
+	switch cmd {
+	case "/nick":
+		return "/nick " + args[1]
+	case "/join":
+		return "/join " + args[1]
+	case "/rooms":
+		return "/rooms"
+	case "/msg":
+		return "/msg " + strings.Join(args[1:], " ")
+	case "/quit":
+		return "/quit"
+	default:
+		return "/msg " + msg
+	}
+
+	return msg
 }
 
 func connect() (net.Conn, error) {
