@@ -61,7 +61,7 @@ func getInput() string {
 }
 
 func connect() (net.Conn, error) {
-	ip := "localhost:8888"
+	ip := "192.168.0.105:8888"
 	conn, err := net.Dial("tcp", ip)
 
 	if err != nil {
