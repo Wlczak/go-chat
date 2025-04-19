@@ -95,7 +95,7 @@ func (s *server) msg(c *client, args []string) {
 	}
 
 	c.room.broadcast(c, c.nick+": "+strings.Join(args[1:], " "))
-	c.msg("")
+	c.msg(c.nick + ": " + strings.Join(args[1:], " "))
 }
 
 func (s *server) quit(c *client, args []string) {
