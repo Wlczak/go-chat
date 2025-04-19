@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"crypto/rand"
 	"fmt"
 	"net"
 	"os"
@@ -10,6 +11,9 @@ import (
 )
 
 var serial_mu sync.Mutex
+var wg sync.WaitGroup
+
+var is_last bool = false
 
 const (
 	msg_prefix = "> "
@@ -24,22 +28,30 @@ func main() {
 		serial_mu.Unlock()
 		return
 	}
-
+	wg.Add(1)
 	go readConn(conn)
 
+	go handleInput(conn)
+
+	wg.Wait()
+}
+
+func handleInput(conn net.Conn) {
 	for {
-		send_msg := getInput()
-		conn.Write([]byte(send_msg + "\n"))
+		msg := getInput()
+		conn.Write([]byte(msg + "\n"))
 	}
 }
 
 func readConn(conn net.Conn) {
+	defer wg.Done()
+
 	conn_reader := bufio.NewReader(conn)
 	for {
 		recieve_msg, err := conn_reader.ReadString('\n')
 
 		if err != nil {
-			print(fmt.Sprintf("%v", err))
+			//print(fmt.Sprintf("%v", err))
 			return
 		}
 		print(fmt.Sprint(recieve_msg))
@@ -68,20 +80,25 @@ func filterInput(msg string) string {
 
 	switch cmd {
 	case "/nick":
+		if len(args) < 2 {
+			return "/nick " + rand.Text()
+		}
 		return "/nick " + args[1]
 	case "/join":
+		if len(args) < 2 {
+			return "/join " + rand.Text()
+		}
 		return "/join " + args[1]
 	case "/rooms":
 		return "/rooms"
 	case "/msg":
 		return "/msg " + strings.Join(args[1:], " ")
 	case "/quit":
+		is_last = true
 		return "/quit"
 	default:
 		return "/msg " + msg
 	}
-
-	return msg
 }
 
 func connect() (net.Conn, error) {
