@@ -1,14 +1,23 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func print(msg string) {
 	serial_mu.Lock()
 	defer serial_mu.Unlock()
+	fmt.Print("\033[F")
+	fmt.Print(strings.Trim(msg, "\n\r"))
+	fmt.Print("\033[B")
+	fmt.Printf("\033[%dD", len(msg)-len(msg_prefix)-1)
+}
+
+func rmLine() {
+	serial_mu.Lock()
 	fmt.Print("\033[A")
-	// Optionally, clear the line
-	// fmt.Print("\033[K")
-	// Move to the end of the line
-	fmt.Print("\033[999C")
-	fmt.Print(msg)
+	fmt.Print("\033[K")
+	fmt.Print("\033[B")
+	serial_mu.Unlock()
 }

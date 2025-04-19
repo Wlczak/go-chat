@@ -10,6 +10,10 @@ import (
 
 var serial_mu sync.Mutex
 
+const (
+	msg_prefix = "> "
+)
+
 func main() {
 	conn, err := connect()
 
@@ -45,13 +49,11 @@ func readConn(conn net.Conn) {
 func getInput() string {
 	scanner := bufio.NewScanner(os.Stdin)
 	serial_mu.Lock()
-	fmt.Print("\033[0G")
-	fmt.Print("\033[K")
-	fmt.Print("> ")
+	fmt.Print(msg_prefix)
 	serial_mu.Unlock()
 	if scanner.Scan() {
 		text := scanner.Text()
-		fmt.Print("\033[A\r\033[K")
+		rmLine()
 		return text
 	} else {
 		return ""
