@@ -28,12 +28,28 @@ func main() {
 		serial_mu.Unlock()
 		return
 	}
+
+	welcome()
+
 	wg.Add(1)
 	go readConn(conn)
 
 	go handleInput(conn)
 
 	wg.Wait()
+}
+
+func welcome() {
+
+	fmt.Println(`
+ _    _      _                          
+| |  | |    | |                         
+| |  | | ___| | ___ ___  _ __ ___   ___ 
+| |/\| |/ _ \ |/ __/ _ \| '_ ' _ \ / _ \
+\  /\  /  __/ | (_| (_) | | | | | |  __/
+ \/  \/ \___|_|\___\___/|_| |_| |_|\___|	
+	`)
+
 }
 
 func handleInput(conn net.Conn) {
