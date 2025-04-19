@@ -7,6 +7,7 @@ import (
 
 func main() {
 	s := newServer()
+	go s.run()
 
 	port := ":8888"
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"fmt"
 	"net"
 	"strings"
 )
@@ -29,15 +30,45 @@ func (c *client) readInput() {
 
 		switch cmd {
 		case "/nick":
-			c.commands <- command{CMD_NICK, c, args}
+			c.commands <- command{
+				id:     CMD_NICK,
+				client: c,
+				args:   args,
+			}
 		case "/join":
-			c.commands <- command{CMD_JOIN, c, args}
+			c.commands <- command{
+				id:     CMD_JOIN,
+				client: c,
+				args:   args,
+			}
 		case "/rooms":
-			c.commands <- command{CMD_ROOMS, c, args}
+			c.commands <- command{
+				id:     CMD_ROOMS,
+				client: c,
+				args:   args,
+			}
 		case "/msg":
-			c.commands <- command{CMD_MSG, c, args}
+			c.commands <- command{
+				id:     CMD_MSG,
+				client: c,
+				args:   args,
+			}
 		case "/quit":
-			c.commands <- command{CMD_QUIT, c, args}
+			c.commands <- command{
+				id:     CMD_QUIT,
+				client: c,
+				args:   args,
+			}
+
+		default:
+			c.err(fmt.Errorf("unknown command: %s", cmd))
 		}
 	}
+}
+
+func (c *client) err(err error) {
+	c.conn.Write([]byte("ERR: " + err.Error() + "\n"))
+}
+func (c *client) msg(msg string) {
+	c.conn.Write([]byte("> " + msg + "\n"))
 }
