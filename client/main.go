@@ -12,7 +12,7 @@ import (
 var serial_mu sync.Mutex
 
 const (
-	msg_prefix = "-> "
+	msg_prefix = "> "
 )
 
 func main() {
