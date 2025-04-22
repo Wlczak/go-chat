@@ -75,7 +75,13 @@ You can type /help to see all commands
 func handleInput(conn net.Conn) {
 	for {
 		msg := getInput()
-		conn.Write([]byte(msg + "\n"))
+		fmt.Println(msg)
+		/*if msg == "/help" {
+			print("test")
+		} else {
+			conn.Write([]byte(msg + "\n"))
+		}*/
+
 	}
 }
 
